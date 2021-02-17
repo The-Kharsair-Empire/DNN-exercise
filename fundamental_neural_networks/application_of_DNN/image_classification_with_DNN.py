@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import scipy
 from PIL import Image
 from scipy import ndimage
-from dnn_app_utils_v3 import predict
+from dnn_app_utils_v3 import *
 from fundamental_neural_networks.logistic_regression.logistic_regression_shallow_NN import check_loaded_data, check_dimension, preprocess_image, load_dataset
 from fundamental_neural_networks.deep_neural_network_modules.deep_neural_network_functional_module_implmentation import *
 
@@ -66,8 +66,42 @@ def two_layer_model(X, Y, layers_dims = (12288, 7, 1), learning_rate = 0.0075, n
     return parameters
 
 def dnn_model(X, Y, layer_dims, learning_rate=0.0075, num_iterations = 3000, print_cost = False, plt_enable = False):
-    return None
+    np.random.seed(1)
+    costs = []
 
+    parameters = initialize_parameter_nlayer_nn(layer_dims)
+
+    for i in range(num_iterations):
+        AL, caches = linear_model_forward(X, parameters)
+        cost = compute_cost(AL, Y)
+        grads = linear_model_backward(AL, Y, caches)
+        parameters = update_parameters(parameters, grads, learning_rate)
+        if print_cost and i % 100 == 0:
+            print ("Cost after iteration %i: %f" %(i, cost))
+            costs.append(cost)
+
+    if plt_enable:
+        plt.plot(np.squeeze(costs))
+        plt.ylabel('cost')
+        plt.xlabel('iterations (per hundreds)')
+        plt.title("Learning rate =" + str(learning_rate))
+        plt.show()
+    return parameters
+
+def test_with_your_own_image(num_px, parameters, classes, image_name = "my_image1.jpg"):
+
+    my_image =  image_name# change this to the name of your image file
+    my_label_y = [0]  # the true class of your image (1 -> cat, 0 -> non-cat)
+    ## END CODE HERE ##
+
+    fname = "images/" + my_image
+    image = np.array(ndimage.imread(fname, flatten=False, mode='RGB'))
+    my_image = scipy.misc.imresize(image, size=(num_px, num_px)).reshape((num_px * num_px * 3, 1))
+    my_predicted_image = predict(my_image, my_label_y, parameters)
+
+    plt.imshow(image)
+    print("y = " + str(np.squeeze(my_predicted_image)) + ", your L-layer model predicts a \"" + classes[
+        int(np.squeeze(my_predicted_image)),].decode("utf-8") + "\" picture.")
 
 def main():
     train_x_orig, train_y, test_x_orig, test_y, classes = load_dataset()
@@ -79,8 +113,11 @@ def main():
     predictions_train = predict(train_x, train_y, parameters)
     predictions_test = predict(test_x, test_y, parameters)
 
+    parameters = dnn_model(train_x, train_y, layer_dims=[12288, 20, 7, 5, 1], num_iterations=2500, print_cost=True, plt_enable=True)
+    pred_train = predict(train_x, train_y, parameters)
+    pred_test = predict(test_x, test_y, parameters)
 
-
+    print_mislabeled_images(classes, test_x, test_y, pred_test)
 
 if __name__ == '__main__':
     main()
