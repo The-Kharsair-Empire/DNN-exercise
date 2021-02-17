@@ -66,7 +66,7 @@ def two_layer_model(X, Y, layers_dims = (12288, 7, 1), learning_rate = 0.0075, n
     return parameters
 
 def dnn_model(X, Y, layer_dims, learning_rate=0.0075, num_iterations = 3000, print_cost = False, plt_enable = False):
-    return None
+    pass
 
 
 def main():
