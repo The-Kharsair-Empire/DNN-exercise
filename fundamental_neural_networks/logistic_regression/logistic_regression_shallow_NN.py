@@ -1,12 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import h5py
 import scipy
 from PIL import Image
 from scipy import ndimage
 import random
-
-
+import h5py
 #######################################
 # Some work to load and preprocess the image data into training and testing samples.
 #######################################
@@ -26,9 +24,9 @@ def load_dataset():
 
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
 
-def check_loaded_trainset_data(image_data_set_orig, image_data_set_y, classes, plt_enable = False):
+def check_loaded_data(image_data_set_orig, image_data_set_y, classes, plt_enable = False):
     print()
-    print(check_loaded_trainset_data.__name__)
+    print(check_loaded_data.__name__)
     index = random.randint(0, len(image_data_set_orig))
     plt.imshow(image_data_set_orig[index])
     print("randomly selected image at index: {}".format(index))
@@ -69,11 +67,13 @@ def preprocess_image(train_set_x_orig, test_set_x_orig, value_range=255., print_
         print("train_set_x_flatten shape: " + str(train_set_x_flatten.shape))
         print("test_set_x_flatten shape: " + str(test_set_x_flatten.shape))
         print("sanity check after reshaping: " + str(train_set_x_flatten[0:5, 0]))
+        print("train_x's shape: " + str(train_set_x.shape))
+        print("test_x's shape: " + str(test_set_x.shape))
     return train_set_x, test_set_x
 
 def setup():
     train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = load_dataset()
-    check_loaded_trainset_data(train_set_x_orig, train_set_y, classes)
+    check_loaded_data(train_set_x_orig, train_set_y, classes)
     check_dimension(train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes)
     train_set_x, test_set_x = preprocess_image(train_set_x_orig, test_set_x_orig, 255., True)
     return train_set_x, train_set_y, test_set_x, test_set_y, classes, test_set_x_orig[0].shape[0], test_set_x_orig[0].shape[1]
@@ -246,11 +246,12 @@ def analyze_learning_rate(learning_rates, train_set_x, train_set_y, test_set_x, 
 # Additional images can be added to the image folder and predict on those image using your learned w and b
 #######################################
 
-def predict_on_other_image(img_name, w, b, plt_enable):
+def predict_on_other_image(img_name, w, b, plt_enable=False):
 
     fname = "images/" + img_name
     image = np.array(ndimage.imread(fname, flatten=False))
     image = image/255.
+    num_px = image[0]
     my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((1, num_px*num_px*3)).T
     my_predicted_image = predict(w, b, my_image)
 
@@ -262,6 +263,7 @@ def predict_on_other_image(img_name, w, b, plt_enable):
 
 
 if __name__ == '__main__':
+
     train_set_x, train_set_y, test_set_x, test_set_y, classes, original_dim_x, original_dim_y = setup()
     model_result = logistic_regression_model(train_set_x, train_set_y, test_set_x, test_set_y, 2000, 0.005, True)
     check_learning_result(test_set_x, test_set_y, model_result, classes, original_dim_x, original_dim_y, True, True)

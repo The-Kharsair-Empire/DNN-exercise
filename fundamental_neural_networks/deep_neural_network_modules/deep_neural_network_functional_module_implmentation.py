@@ -1,16 +1,7 @@
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
-from testCases_v4a import *
-from dnn_utils_v2 import sigmoid, sigmoid_backward, relu, relu_backward
-
-
-plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
-plt.rcParams['image.interpolation'] = 'nearest'
-plt.rcParams['image.cmap'] = 'gray'
-
-np.random.seed(1)
-
+from fundamental_neural_networks.deep_neural_network_modules.dnn_utils_v2 import sigmoid, sigmoid_backward, relu, relu_backward
 
 def initialize_parameter_2layer_nn(n_x, n_h, n_y):
     np.random.seed(1)
@@ -208,4 +199,11 @@ def main():
     print("b2 = " + str(parameters["b2"]))
 
 if __name__ == '__main__':
+    from testCases_v4a import *
+    plt.rcParams['figure.figsize'] = (5.0, 4.0)  # set default size of plots
+    plt.rcParams['image.interpolation'] = 'nearest'
+    plt.rcParams['image.cmap'] = 'gray'
+
+    np.random.seed(1)
+
     main()
