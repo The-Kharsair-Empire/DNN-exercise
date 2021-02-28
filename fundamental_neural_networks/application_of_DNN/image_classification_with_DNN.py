@@ -7,12 +7,11 @@ from scipy import ndimage
 from dnn_app_utils_v3 import *
 from fundamental_neural_networks.logistic_regression.logistic_regression_shallow_NN import check_loaded_data, check_dimension, preprocess_image, load_dataset
 from fundamental_neural_networks.deep_neural_network_modules.deep_neural_network_functional_module_implmentation import *
+#from numba import jit, cuda, vectorize, njit
 
 plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
-
-np.random.seed(1)
 
 
 def two_layer_model(X, Y, layers_dims = (12288, 7, 1), learning_rate = 0.0075, num_iterations = 3000, print_cost = False, plt_enable = False):
@@ -64,6 +63,7 @@ def two_layer_model(X, Y, layers_dims = (12288, 7, 1), learning_rate = 0.0075, n
         plt.show()
 
     return parameters
+
 
 def dnn_model(X, Y, layer_dims, learning_rate=0.0075, num_iterations = 3000, print_cost = False, plt_enable = False):
     np.random.seed(1)
